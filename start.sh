@@ -98,6 +98,13 @@ USER_WORKSPACE="/data/workspace/$USER_NAME"
 USER_WWW="$USER_HOME/www"
 USER_PWD="$USER_NAME@dev"
 
+CONTAINER_USER_NAME="webserver"
+CONTAINER_USER_PWD="$CONTAINER_USER_NAME@dev"
+CONTAINER_USER_WWW="/home/$CONTAINER_USER_NAME/www"
+
+CONTAINER_ROOT_NAME="root"
+CONTAINER_ROOT_PWD="$CONTAINER_ROOT_NAME@dev"
+
 # 创建用户
 if [ ! -d "$USER_HOME" ]
 then
@@ -126,13 +133,15 @@ then
 fi
 
 echo "----开始创建容器：$USER_NAME"
-docker run -d -t -v "$USER_WWW:/home/webserver/www" --name="$USER_NAME" --privileged --add-host="$USER_NAME.$HOST_DOMAIN:$HOST_IP" -p $USER_SSH_PORT:22 -p $USER_HTTP_PORT:80 "$IMAGES:$TAG"
+docker run -d -t -v "$USER_WWW:$CONTAINER_USER_WWW" --name="$USER_NAME" --privileged --add-host="$USER_NAME.$HOST_DOMAIN:$HOST_IP" -p $USER_SSH_PORT:22 -p $USER_HTTP_PORT:80 "$IMAGES:$TAG"
+docker exec -it "$USER_NAME" bash -c "chown -R $CONTAINER_USER_NAME:$CONTAINER_USER_NAME $CONTAINER_USER_WWW"
 
 echo ""
 echo "----执行完成! 请妥善保管以下属于您私人的专属账号!!!"
 echo ""
 echo "登录宿主机: ssh $USER_NAME@$HOST_IP; 默认密码为: $USER_PWD"
-echo "登录您的容器: ssh webserver@$HOST_IP -p $USER_SSH_PORT; 默认密码为: webserver@dev"
+echo "登录您的容器: ssh $CONTAINER_USER_NAME@$HOST_IP -p $USER_SSH_PORT; 默认密码为: $CONTAINER_USER_PWD"
+echo "您的容器 $CONTAINER_ROOT_NAME 密码: $CONTAINER_ROOT_PWD"
 echo ""
 echo "您还可以通过浏览器访问您容器的项目哦,如:"
 echo "$HOST_DOMAIN:$USER_HTTP_PORT"
