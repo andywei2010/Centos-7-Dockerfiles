@@ -118,8 +118,8 @@ if [ ! -d "$USER_WORKSPACE" ]
 then
 	echo "----开始创建用户工作目录：$USER_WORKSPACE"
 	mkdir -p "$USER_WORKSPACE"
-	chown -R "$USER_NAME":"$USER_NAME" "$USER_WORKSPACE"
 	ln -s "$USER_WORKSPACE" "$USER_WWW"
+	chown -R "$USER_NAME":"$USER_NAME" "$USER_WORKSPACE" "$USER_WWW"
 fi
 
 # 删除用户容器
@@ -134,7 +134,8 @@ fi
 
 echo "----开始创建容器：$USER_NAME"
 docker run -d -t -v "$USER_WWW:$CONTAINER_USER_WWW" --name="$USER_NAME" --privileged --add-host="$USER_NAME.$HOST_DOMAIN:$HOST_IP" -p $USER_SSH_PORT:22 -p $USER_HTTP_PORT:80 "$IMAGES:$TAG"
-docker exec -it "$USER_NAME" bash -c "chown -R $CONTAINER_USER_NAME:$CONTAINER_USER_NAME $CONTAINER_USER_WWW"
+#docker exec -it "$USER_NAME" bash -c "chown -R $CONTAINER_USER_NAME:$CONTAINER_USER_NAME $CONTAINER_USER_WWW"
+docker exec -it "$USER_NAME" bash -c "chmod -R 777 $CONTAINER_USER_WWW"
 
 echo ""
 echo "----执行完成! 请妥善保管以下属于您私人的专属账号!!!"
