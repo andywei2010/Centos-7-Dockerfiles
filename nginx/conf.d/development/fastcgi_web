@@ -1,0 +1,24 @@
+fastcgi_pass   127.0.0.1:9000;
+fastcgi_param  SCRIPT_FILENAME    $document_root$fastcgi_script_name;
+
+#环境设置
+fastcgi_param  SITE_ENV 'development';
+
+#缓存目录
+fastcgi_param  SITE_CACHE_DIR  /home/webserver/cache/$server_name/;
+#日志目录
+fastcgi_param  SITE_LOG_DIR  /home/webserver/log/$server_name/;
+#session目录
+fastcgi_param  SITE_SESSION_DIR  /home/webserver/session/$server_name/;
+#cookie目录
+fastcgi_param  SITE_COOKIE_DIR  /home/webserver/cookie/$server_name/;
+
+#域名站点配置
+fastcgi_param  SITE_DOMAIN 'demo.dev';
+
+#Memcache服务配置
+fastcgi_param  SITE_MEMC_SERVER '127.0.0.1:11211';
+
+#Redis服务配置
+fastcgi_param  SITE_REDIS_SERVER '127.0.0.1:6379';
+
